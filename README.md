@@ -63,16 +63,69 @@ python main.py                   # start with an empty diagram
 python main.py my-model.json     # open a project file on startup
 ```
 
-Typical workflow:
+## Workflow: design → verification → code → verification
 
-1. Drag elements from the **Toolbox** onto the canvas: trust boundaries, processes,
-   and assets (sockets, files, shared memory, …).
-2. Connect them with edges. An edge that crosses a trust boundary must end on an asset
-   (its interface).
-3. Open the **Threats** tab and generate threats (rule-based or LLM-assisted), then
-   score them, assign mitigations and set their status.
-4. Check the **Attack Surface** panel and run **Tools → Validate**.
-5. Save the project (`.json`) and export a report from the **File** menu.
+ThreatTrace follows one claim from the whiteboard to the running target: *a threat is
+mitigated by a control, the control is implemented in named code, and a test on target
+shows it behaves that way.* Each phase adds evidence to the same model, and a human
+accepts or rejects whatever an agent proposes.
+
+### 1. Design phase — model the system and its threats
+
+1. **Draw the system.** Drag elements from the **Toolbox** onto the canvas: *trust
+   boundaries*, *processes* (host apps, libraries, kernel modules, …) and *assets*
+   (sockets, files, shared memory, registers, …). Set each node's security properties in
+   the **Properties** panel.
+2. **Connect them.** Draw edges for the data flows and operations between elements. An
+   edge that crosses a trust boundary must end on an asset — its *interface*. Use
+   **Tools → Validate Diagram** to catch modelling mistakes early.
+3. **Generate threats.** Use **Tools → Generate Threats** (*From Local Template Rules*
+   needs nothing extra; *From Claude* / *From Codex* use the CLI). Threats are attached
+   to the edges they concern and listed in the **Threats** panel. Review each one, score
+   it with CVSS, and set its status. Check the **Attack Surface** panel for every
+   boundary-crossing entry point and its open threats.
+4. **Add security controls.** Drop a *Security Control* from the Toolbox over the part of
+   the diagram it protects (file permission, encryption, secure boot, …).
+
+### 2. Design verification — do the controls actually cover the threats?
+
+1. Run **Tools → Apply Security Controls…**. Every control is assessed against the
+   threats it covers; the ones it mitigates are linked, with a rationale and residual
+   risk. Accept or reject each proposed link.
+2. Right-click a security control and choose **Check Mitigation Coverage…** to assess just
+   that control against the connections it covers.
+3. Export **File → Export Design Verification Report…** for the design review. Threats
+   with no covering control, or with controls that don't hold, are called out.
+
+### 3. Coding phase — is each control implemented in the source?
+
+1. Set the diagram's **Source Root** (Properties panel, with the diagram selected) to the
+   checkout that implements the design.
+2. Run **Tools → Static Verification (Source Code)…**, pick the controls to check, and
+   start the run. For each control the agent looks in the source and reports
+   *Implemented*, *Not implemented* or *Insufficient evidence* — and must cite
+   `file:line` for anything it claims.
+3. Review the findings and drop any you disagree with before they are recorded. Accepted
+   findings become evidence on the threats those controls mitigate.
+
+### 4. Runtime verification — does it behave that way on target?
+
+1. Run **Tools → Generate Runtime Tests…**. ThreatTrace writes a test specification per
+   control and covered interface (negative tests first: an unprivileged actor must be
+   *refused*), harness skeletons, and a **manifest** linking each test to its control and
+   the observable it expects.
+2. Have the tests run on the target while a syscall log is captured. Executing the tests
+   on target is your harness's job; ThreatTrace stops at specs, skeletons and the manifest.
+3. Run **Tools → Import Test Results (Runtime)…** with the manifest and the captured log.
+   Each test is decided *Pass*, *Fail* or *Not exercised*, and the evidence is recorded
+   on the threats the controls mitigate.
+4. Optionally close the loop on the architecture itself: **Tools → Import Runtime Log…**
+   builds an implementation model from a log, and **Tools → Verify Against Runtime Log…**
+   reports interfaces that were observed but never modelled, and modelled ones never seen.
+
+After any phase, **Tools → Compare With File…** diffs the current model against an earlier
+version, and **File → Export Threats Report…** produces the project's threat register, ranked by
+risk, with what is still open and the evidence behind each threat.
 
 ### Automation / headless use
 
