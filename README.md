@@ -28,6 +28,60 @@ It is built with Python and [PySide6](https://doc.qt.io/qtforpython-6/) (Qt 6).
 - **Validation** — diagram validation rules with an issues dialog
 - **Export** — Markdown/PDF reports, threats CSV, and PNG/SVG/PDF diagram export
 
+## Security asset design
+
+Most threat-modelling tools treat an asset as a box with a label. In ThreatTrace the
+**asset is the unit of analysis**, and it is modelled the way systems code actually
+exposes it: one logical resource, reachable through several distinct *interfaces*, each
+with its own calls, threats, controls and evidence.
+
+```
+Asset  (one logical resource, e.g. "Device Memory")
+ └─ Interface  (a distinct access channel — device node, address space, socket, MMIO …)
+     ├─ category + fields   (what kind of channel; path, ioctl family, owning driver …)
+     ├─ access-class        (who may use it: software.*, hardware.* …)
+     └─ Operation           (what it exposes: Allocate, Map, Free …)
+         └─ Steps           (the concrete syscalls: open → ioctl:… , role acquire / operate)
+```
+
+- **Interfaces, not boxes.** An asset exposes any number of interfaces, and each one
+  appears as its own slot on the node. Connecting an edge to a slot means *"access the
+  asset through this channel"*. A device buffer reached through a `/dev` node by a
+  user process and through a device address by hardware is **one asset with two
+  interfaces**, so threats, controls and runtime evidence are tracked per interface and
+  never blurred together.
+- **Typed channels.** Every interface belongs to a category — ioctl, mmap, filesystem,
+  sysfs, local or network socket, message passing, pipe, signal/event, hypercall,
+  SMC/TEE, MMIO, DMA, firmware, bus (UART/USB/PCIe) and more. A category declares the
+  fields an interface of that kind needs (path, ioctl family, owning driver, …) and the
+  **security controls relevant to it**, so the right questions are asked for the channel
+  at hand.
+- **Operations that match the code.** An analyst draws a readable operation such as
+  *Allocate*; it is defined as an ordered list of syscall **steps** underneath, so the
+  design stays faithful to what the implementation really does.
+- **Access rules checked for you.** Each interface carries an *access-class* filter
+  (for example `software.*` or `hardware.device`). Validation rejects an edge whose
+  source isn't allowed on that interface, and an edge that crosses a trust boundary must
+  land on an asset — its interface — not on a process.
+- **Controls guard interfaces.** A file-permission or capability check protects the
+  device-node interface; an MMU/IOMMU control protects the address-space interface. A
+  control covers a specific interface, and mitigation is judged per interface.
+- **One model, all the phases.** Because an interface knows its path and its syscalls,
+  the same description drives threat generation (design), per-control source checks
+  (coding) and runtime log matching (target): a syscall observed on `/dev/…` maps back
+  to the interface and operation that were modelled, and anything observed but never
+  modelled is reported.
+- **Assets are data.** Asset types are `*.asset.json` descriptors in
+  `template/security/asset/`. Add one by hand, or use **Tools → Asset Types…** (the Asset
+  Editor) to define interfaces, operations and steps, with data-safety checks (renaming a
+  type updates its instances; deleting one reports how many nodes use it).
+
+Planned, and described in `doc/` but not yet built: relationship edges that separate
+*ownership* from *lease* (a process holds a revocable handle to a buffer, it doesn't own
+it) and **edge groups**, where one drawn operation expands into its syscall edges
+automatically. See `doc/asset-interface-model-design.md`, `doc/asset-definition-design.md`,
+`doc/asset-relationships-design.md` and `doc/edge-group-design.md`.
+
 ## Screenshots
 
 **Properties** — security properties of the selected node, including its operations:
