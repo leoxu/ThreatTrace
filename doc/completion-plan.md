@@ -13,7 +13,7 @@ A **software security architecture diagramming tool** for embedded/driver/RTOS e
 - **Property editor**: live-updating dock for nodes, edges, slots, labels; security-property combo boxes
 - **Sequences**: step list, per-step properties, pick mode, colored overlays, numbered badges on edges
 - **Serialization**: full round-trip JSON including threats, sequences, composites
-- **Import tools**: `convert_threat_model.py` (from Microsoft TMT), `merge_proxy.py` (sub-diagram merging)
+- **Import tools**: `merge_proxy.py` (sub-diagram merging)
 - **Parent-child containment**: nodes auto-assign parent-id when dragged inside a container
 
 ---
