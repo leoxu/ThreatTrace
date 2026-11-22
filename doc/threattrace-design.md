@@ -450,15 +450,13 @@ semantics, threat grouping, diagnostics, the UI fixes and 17 design docs.
 1. Commit in coherent groups: (a) threat generate/update semantics, (b) agent
    runner + cancellation + diagnostics, (c) UI grouping/folding/stylesheet fixes,
    (d) documentation.
-2. Merge to `main`; confirm the Pages job for `doc/intro.html`.
-3. Regenerate `doc/images` so the published tour shows the grouped threat lists.
-4. **Asset editor — data-safety pass** (`asset-editor-enhancements.md` phase 1):
+2. **Asset editor — data-safety pass** (`asset-editor-enhancements.md` phase 1):
    renaming a type updates its instances instead of orphaning them, saving over
    an existing type is confirmed, deleting one reports how many nodes use it, and
    the save validation is completed. Small, self-contained, and it protects the
    authoring path everything else in §2.2 depends on.
 
-*Done when:* `git status` is clean, the tour renders from `main`, and renaming an
+*Done when:* `git status` is clean and renaming an
 asset type leaves no orphaned instance and no duplicate descriptor.
 
 ### M1 — Attack paths (L)
