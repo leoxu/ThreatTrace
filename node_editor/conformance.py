@@ -83,7 +83,7 @@ def _norm_component(name: str) -> str:
     """Normalize a component name for fuzzy matching.
 
     'libfoo_bar.so' -> 'foobar';  'Foo Bar' -> 'foobar';
-    'vksc_01tri' -> 'vksc01tri'.
+    'my_app_01' -> 'myapp01'.
     """
     s = name.lower()
     s = re.sub(r"\.so(\.\d+)*$", "", s)      # strip .so / .so.1

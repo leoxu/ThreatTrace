@@ -58,7 +58,7 @@ Verdict    — derived: VERIFIED / PARTIAL / UNVERIFIED / REFUTED / STALE
 
     { "phase": "dynamic", "source": "runtime-log", "verdict": "supports",
       "detail": "SEC-C14-neg: open(/dev/mydrv/dev0/as) as uid 1000 → EACCES",
-      "provenance": { "build": "6.0.4-rel", "log": "vksc_01tri-linux.log",
+      "provenance": { "build": "1.0.0-rel", "log": "app-linux.log",
                       "manifest_hash": "b77e…" } }
   ] }
 ```
