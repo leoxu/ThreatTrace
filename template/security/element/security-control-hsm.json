@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "nodes": [
+    {
+      "extends": "template/security/element/security-control.json",
+      "type": "Circle",
+      "properties": {
+        "name": "Hardware Security Module (HSM)",
+        "label": "hsm-1",
+        "security-properties": {
+          "control_type": "Hardware Security Module (HSM)",
+          "description": "",
+          "requirement_id": ""
+        },
+        "z-order": 20
+      }
+    }
+  ],
+  "edges": []
+}

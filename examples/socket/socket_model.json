@@ -1,0 +1,405 @@
+{
+  "version": 1,
+  "nodes": {
+    "bc-client-app": {
+      "type": "Boundary",
+      "properties": {
+        "class": "security trust-boundary",
+        "label": "trust-boundary-client",
+        "fill": false,
+        "z-order": 1,
+        "parent-id": null,
+        "children": ["n-client", "a-client-socket"],
+        "color": "#4a90d9",
+        "name": "Client App",
+        "border": 3,
+        "security-properties": {
+          "description": "Trust boundary for the client process",
+          "trust-level": "user"
+        },
+        "width": 500,
+        "height": 460
+      },
+      "inputs": [],
+      "outputs": []
+    },
+    "bc-server-app": {
+      "type": "Boundary",
+      "properties": {
+        "class": "security trust-boundary",
+        "label": "trust-boundary-server",
+        "fill": false,
+        "z-order": 1,
+        "parent-id": null,
+        "children": ["n-server", "a-server-socket", "a-accepted-conn"],
+        "color": "#e67e22",
+        "name": "Server App",
+        "border": 3,
+        "security-properties": {
+          "description": "Trust boundary for the server process and its sockets",
+          "trust-level": "user"
+        },
+        "width": 600,
+        "height": 500
+      },
+      "inputs": [],
+      "outputs": []
+    },
+    "n-client": {
+      "type": "Box",
+      "properties": {
+        "class": "security process",
+        "label": "process-client",
+        "fill": false,
+        "z-order": 10,
+        "parent-id": "bc-client-app",
+        "children": [],
+        "color": "#4a90d9",
+        "name": "client",
+        "border": 1,
+        "security-properties": {
+          "path": "./client",
+          "arguments": [],
+          "environments": {},
+          "abilities": [],
+          "uid": 1000,
+          "gids": [1000]
+        },
+        "width": 280,
+        "height": 200
+      },
+      "inputs": [
+        {"name": "in", "properties": {}}
+      ],
+      "outputs": [
+        {"name": "out", "properties": {}}
+      ]
+    },
+    "a-client-socket": {
+      "type": "Box",
+      "properties": {
+        "class": "security asset",
+        "label": "asset-client-socket",
+        "fill": true,
+        "z-order": 11,
+        "parent-id": "bc-client-app",
+        "children": [],
+        "color": "#27ae60",
+        "name": "Client Socket",
+        "border": 1,
+        "security-properties": {
+          "type": "socket",
+          "domain": "AF_INET",
+          "sock-type": "SOCK_STREAM",
+          "protocol": "TCP",
+          "address": "127.0.0.1",
+          "port": "8080",
+          "owner": "client:1000",
+          "mode": "0600",
+          "encryption": "none"
+        },
+        "width": 180,
+        "height": 110
+      },
+      "inputs": [
+        {"name": "in", "properties": {}}
+      ],
+      "outputs": []
+    },
+    "n-server": {
+      "type": "Box",
+      "properties": {
+        "class": "security process",
+        "label": "process-server",
+        "fill": false,
+        "z-order": 10,
+        "parent-id": "bc-server-app",
+        "children": [],
+        "color": "#e67e22",
+        "name": "server",
+        "border": 1,
+        "security-properties": {
+          "path": "./server",
+          "arguments": [],
+          "environments": {},
+          "abilities": [],
+          "uid": 1000,
+          "gids": [1000]
+        },
+        "width": 280,
+        "height": 200
+      },
+      "inputs": [
+        {"name": "in", "properties": {}}
+      ],
+      "outputs": [
+        {"name": "out", "properties": {}}
+      ]
+    },
+    "a-server-socket": {
+      "type": "Box",
+      "properties": {
+        "class": "security asset",
+        "label": "asset-server-socket",
+        "fill": true,
+        "z-order": 11,
+        "parent-id": "bc-server-app",
+        "children": [],
+        "color": "#27ae60",
+        "name": "Server Socket",
+        "border": 1,
+        "security-properties": {
+          "type": "socket",
+          "domain": "AF_INET",
+          "sock-type": "SOCK_STREAM",
+          "protocol": "TCP",
+          "address": "0.0.0.0",
+          "port": "8080",
+          "owner": "server:1000",
+          "mode": "0600",
+          "encryption": "none"
+        },
+        "width": 180,
+        "height": 110
+      },
+      "inputs": [
+        {"name": "in", "properties": {}}
+      ],
+      "outputs": []
+    },
+    "a-accepted-conn": {
+      "type": "Box",
+      "properties": {
+        "class": "security asset",
+        "label": "asset-accepted-conn",
+        "fill": true,
+        "z-order": 11,
+        "parent-id": "bc-server-app",
+        "children": [],
+        "color": "#27ae60",
+        "name": "Accepted Connection",
+        "border": 1,
+        "security-properties": {
+          "type": "socket",
+          "domain": "AF_INET",
+          "sock-type": "SOCK_STREAM",
+          "protocol": "TCP",
+          "address": "127.0.0.1",
+          "port": "8080",
+          "owner": "server:1000",
+          "mode": "0600",
+          "encryption": "none"
+        },
+        "width": 180,
+        "height": 110
+      },
+      "inputs": [
+        {"name": "in", "properties": {}}
+      ],
+      "outputs": []
+    }
+  },
+  "diagrams": [
+    {
+      "id": "diag-socket-example",
+      "name": "TCP Client-Server Socket Model",
+      "description": "Security model of a simple TCP echo client/server using POSIX sockets (AF_INET, SOCK_STREAM, port 8080).",
+      "source-root": "",
+      "placements": [
+        {"node_id": "bc-client-app",   "pos": [-950, -400]},
+        {"node_id": "bc-server-app",   "pos": [-250, -400]},
+        {"node_id": "n-client",        "pos": [-920, -380]},
+        {"node_id": "a-client-socket", "pos": [-920, -160]},
+        {"node_id": "n-server",        "pos": [-220, -380]},
+        {"node_id": "a-server-socket", "pos": [-220, -280]},
+        {"node_id": "a-accepted-conn", "pos": [-220, -140]}
+      ],
+      "edges": [
+        {
+          "id": "e-client-socket-create",
+          "from": {"node": "n-client", "slot": "out"},
+          "to":   {"node": "a-client-socket", "slot": "in"},
+          "label": {"text": "socket", "pos": [-850, -240]},
+          "threat_guids": [],
+          "properties": {
+            "type": "socket",
+            "kind": "resource",
+            "description": "Client creates its own TCP socket",
+            "function": "socket(AF_INET, SOCK_STREAM, 0)",
+            "source location": "client.c:18"
+          }
+        },
+        {
+          "id": "e-client-connect",
+          "from": {"node": "n-client", "slot": "out"},
+          "to":   {"node": "a-client-socket", "slot": "in"},
+          "label": {"text": "connect", "pos": [-830, -220]},
+          "threat_guids": [],
+          "properties": {
+            "type": "connect",
+            "kind": "resource",
+            "description": "Client connects its socket to server at 127.0.0.1:8080",
+            "function": "connect(sock, (struct sockaddr *)&serv_addr, sizeof(serv_addr))",
+            "source location": "client.c:35"
+          }
+        },
+        {
+          "id": "e-client-close",
+          "from": {"node": "n-client", "slot": "out"},
+          "to":   {"node": "a-client-socket", "slot": "in"},
+          "label": {"text": "close", "pos": [-810, -200]},
+          "threat_guids": [],
+          "properties": {
+            "type": "close",
+            "kind": "resource",
+            "description": "Client closes its socket on exit",
+            "function": "close(sock)",
+            "source location": "client.c:70"
+          }
+        },
+        {
+          "id": "e-server-socket-create",
+          "from": {"node": "n-server", "slot": "out"},
+          "to":   {"node": "a-server-socket", "slot": "in"},
+          "label": {"text": "socket", "pos": [-100, -350]},
+          "threat_guids": [],
+          "properties": {
+            "type": "socket",
+            "kind": "resource",
+            "description": "Server creates the TCP listening socket",
+            "function": "socket(AF_INET, SOCK_STREAM, 0)",
+            "source location": "server.c:18"
+          }
+        },
+        {
+          "id": "e-server-setsockopt",
+          "from": {"node": "n-server", "slot": "out"},
+          "to":   {"node": "a-server-socket", "slot": "in"},
+          "label": {"text": "setsockopt", "pos": [-80, -330]},
+          "threat_guids": [],
+          "properties": {
+            "type": "getsockopt",
+            "kind": "resource",
+            "description": "Server sets SO_REUSEADDR on listening socket",
+            "function": "setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt))",
+            "source location": "server.c:26"
+          }
+        },
+        {
+          "id": "e-server-bind",
+          "from": {"node": "n-server", "slot": "out"},
+          "to":   {"node": "a-server-socket", "slot": "in"},
+          "label": {"text": "bind", "pos": [-60, -310]},
+          "threat_guids": [],
+          "properties": {
+            "type": "bind",
+            "kind": "resource",
+            "description": "Server binds listening socket to INADDR_ANY:8080",
+            "function": "bind(server_fd, (struct sockaddr *)&address, sizeof(address))",
+            "source location": "server.c:37"
+          }
+        },
+        {
+          "id": "e-server-listen",
+          "from": {"node": "n-server", "slot": "out"},
+          "to":   {"node": "a-server-socket", "slot": "in"},
+          "label": {"text": "listen", "pos": [-40, -290]},
+          "threat_guids": [],
+          "properties": {
+            "type": "listen",
+            "kind": "resource",
+            "description": "Server marks socket as passive; backlog=3",
+            "function": "listen(server_fd, 3)",
+            "source location": "server.c:43"
+          }
+        },
+        {
+          "id": "e-server-accept",
+          "from": {"node": "n-server", "slot": "out"},
+          "to":   {"node": "a-server-socket", "slot": "in"},
+          "label": {"text": "accept", "pos": [-20, -270]},
+          "threat_guids": [],
+          "properties": {
+            "type": "accept",
+            "kind": "resource",
+            "description": "Server blocks on accept(); returns client_fd as accepted connection",
+            "function": "accept(server_fd, (struct sockaddr *)&address, (socklen_t*)&addrlen)",
+            "source location": "server.c:51"
+          }
+        },
+        {
+          "id": "e-server-read-client",
+          "from": {"node": "n-server", "slot": "out"},
+          "to":   {"node": "a-accepted-conn", "slot": "in"},
+          "label": {"text": "read", "pos": [-120, -180]},
+          "threat_guids": [],
+          "properties": {
+            "type": "read",
+            "kind": "resource",
+            "description": "Server reads incoming message bytes from accepted client connection fd",
+            "function": "read(client_fd, buffer, BUFFER_SIZE)",
+            "source location": "server.c:62"
+          }
+        },
+        {
+          "id": "e-server-close-client-fd",
+          "from": {"node": "n-server", "slot": "out"},
+          "to":   {"node": "a-accepted-conn", "slot": "in"},
+          "label": {"text": "close", "pos": [-100, -160]},
+          "threat_guids": [],
+          "properties": {
+            "type": "close",
+            "kind": "resource",
+            "description": "Server closes accepted connection fd when client disconnects",
+            "function": "close(client_fd)",
+            "source location": "server.c:80"
+          }
+        },
+        {
+          "id": "e-server-close-server-fd",
+          "from": {"node": "n-server", "slot": "out"},
+          "to":   {"node": "a-server-socket", "slot": "in"},
+          "label": {"text": "close", "pos": [-80, -250]},
+          "threat_guids": [],
+          "properties": {
+            "type": "close",
+            "kind": "resource",
+            "description": "Server closes the listening socket on shutdown",
+            "function": "close(server_fd)",
+            "source location": "server.c:81"
+          }
+        },
+        {
+          "id": "e-client-send",
+          "from": {"node": "n-client", "slot": "out"},
+          "to":   {"node": "n-server", "slot": "in"},
+          "label": {"text": "send", "pos": [-580, -300]},
+          "threat_guids": [],
+          "properties": {
+            "type": "send",
+            "kind": "flow",
+            "description": "Client sends user message to server across trust boundary via connected socket",
+            "function": "send(sock, message, strlen(message), 0)",
+            "source location": "client.c:55"
+          }
+        },
+        {
+          "id": "e-server-send-echo",
+          "from": {"node": "n-server", "slot": "out"},
+          "to":   {"node": "n-client", "slot": "in"},
+          "label": {"text": "send (echo)", "pos": [-580, -260]},
+          "threat_guids": [],
+          "properties": {
+            "type": "send",
+            "kind": "flow",
+            "description": "Server echoes message back to client across trust boundary via accepted connection",
+            "function": "send(client_fd, buffer, bytes_read, 0)",
+            "source location": "server.c:76"
+          }
+        }
+      ],
+      "threats": {},
+      "sequences": {}
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "nodes": [
+    {
+      "extends": "template/security/element/security-control.json",
+      "type": "Circle",
+      "properties": {
+        "name": "Audit Logging",
+        "label": "audit-log-1",
+        "security-properties": {
+          "control_type": "Audit Logging",
+          "description": "Tamper-evident audit trail of operations on this interface, recorded by the privileged side. Caller identity (pid/tid, uid/gid, container or cgroup, binary path or hash) is taken from the kernel's view of the client, never from the request payload; each record also carries what was submitted and what it touched (context/channel id, request digest, handles and address ranges, completion status) and a monotonic, boot-qualified timestamp. Records are append-only and hash-chained, with checkpoint signatures over the chain head using a key held in a TEE/HSM, and the client has no write or unlink permission on the log. Log pressure has an explicit fail-safe policy (deny the operation or record a gap marker) so flooding the logger cannot silently erase accountability.",
+          "requirement_id": ""
+        },
+        "z-order": 20
+      }
+    }
+  ],
+  "edges": []
+}

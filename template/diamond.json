@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "nodes": [
+    {
+      "extends": "template/node.json",
+      "type": "Diamond",
+      "properties": {
+        "color": "#1abc9c"
+      }
+    }
+  ],
+  "edges": []
+}

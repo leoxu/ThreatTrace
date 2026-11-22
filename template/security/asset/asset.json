@@ -1,0 +1,31 @@
+{
+  "version": 1,
+  "nodes": [
+    {
+      "id": "asset-1",
+      "extends": "template/box.json",
+      "properties": {
+        "name": "Asset",
+        "class": "security asset",
+        "label": "asset-1",
+        "color": "#62a0ea",
+        "z-order": 11,
+        "width": 120,
+        "height": 80,
+        "security-properties": {
+          "type": ""
+        }
+      },
+      "inputs": [
+        "in",
+        "in-2",
+        "in-3",
+        "in-4"
+      ],
+      "outputs": [],
+      "sealed_inputs": false,
+      "sealed_outputs": true
+    }
+  ],
+  "edges": []
+}

@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "nodes": [
+    {
+      "extends": "template/node.json",
+      "type": "Boundary",
+      "properties": {
+        "color": "#bbbbbb",
+        "text-color": "#e53935",
+        "border": 5
+      },
+      "inputs": [],
+      "outputs": []
+    }
+  ],
+  "edges": []
+}

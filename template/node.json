@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "nodes": [
+    {
+      "id": "guiid",
+      "pos": [
+        0.0,
+        0.0
+      ],
+      "properties": {
+        "class": "shape",
+        "label": "node-1",
+        "text-color": "#000000",
+        "fill": true,
+        "border": 1,
+        "z-order": 1,
+        "parent-id": null,
+        "children": []
+      }
+    }
+  ],
+  "edges": []
+}

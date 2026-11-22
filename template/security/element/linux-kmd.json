@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "nodes": [
+    {
+      "id": "linux-kmd-1",
+      "extends": "template/circle.json",
+      "properties": {
+        "name": "Linux KMD",
+        "class": "security dynamic-library",
+        "label": "linux-kmd-1",
+        "z-order": 11,
+        "security-properties": {
+          "name": "linux-kmd-1",
+          "type": "linux kmd"
+        },
+        "access-class": "software.kmd"
+      },
+      "inputs": [
+        "in",
+        "in-2",
+        "in-3",
+        "in-4"
+      ],
+      "outputs": [
+        "out",
+        "out-2",
+        "out-3",
+        "out-4"
+      ]
+    }
+  ],
+  "edges": []
+}

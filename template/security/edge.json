@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "edges": [
+    {
+      "properties": {
+        "sub-type": {
+          "default": "internal func call"
+        },
+        "color": "",
+        "text-color": "",
+        "description": "",
+        "function": "",
+        "source location": ""
+      }
+    }
+  ]
+}

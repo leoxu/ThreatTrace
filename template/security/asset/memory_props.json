@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "security-properties": {
+    "type": {
+      "default": "memory",
+      "options": [
+        "memory"
+      ]
+    },
+    "owner": ""
+  }
+}

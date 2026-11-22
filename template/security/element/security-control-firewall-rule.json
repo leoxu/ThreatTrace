@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "nodes": [
+    {
+      "extends": "template/security/element/security-control.json",
+      "type": "Circle",
+      "properties": {
+        "name": "Firewall Rule",
+        "label": "firewall-rule-1",
+        "security-properties": {
+          "control_type": "Firewall Rule",
+          "description": "",
+          "requirement_id": ""
+        },
+        "z-order": 20
+      }
+    }
+  ],
+  "edges": []
+}

@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "security-properties": {
+    "type": {
+      "default": "socket",
+      "options": ["file", "register", "shared memory", "socket", "general asset"]
+    },
+    "domain": {
+      "default": "AF_INET",
+      "options": ["AF_INET", "AF_INET6", "AF_UNIX", "AF_NETLINK", "AF_PACKET"]
+    },
+    "sock-type": {
+      "default": "SOCK_STREAM",
+      "options": ["SOCK_STREAM", "SOCK_DGRAM", "SOCK_RAW", "SOCK_SEQPACKET"]
+    },
+    "protocol": "",
+    "address": "",
+    "port": "",
+    "owner": "",
+    "mode": {
+      "default": "0600",
+      "options": ["0600", "0660", "0666"]
+    },
+    "encryption": {
+      "default": "none",
+      "options": ["none", "TLS", "DTLS"]
+    }
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "nodes": [
+    {
+      "extends": "template/node.json",
+      "type": "Circle",
+      "properties": {
+        "color": "#6fcf97",
+        "thickness": "2"
+      }
+    }
+  ],
+  "edges": []
+}

@@ -1,0 +1,60 @@
+{
+  "version": 1,
+  "categories": [
+    {
+      "name": "Security Controls",
+      "nodes": [
+        "template/security/element/security-control.json"
+      ]
+    },
+    {
+      "name": "Review",
+      "nodes": [
+        "template/review-comment.json"
+      ]
+    },
+    {
+      "name": "Advanced elements",
+      "nodes": [
+        "template/security/element/proxy.json",
+        "template/composite.json",
+        "template/security/element/subgraph.json"
+      ]
+    },
+    {
+      "name": "General elements",
+      "nodes": [
+        "template/security/element/process.json",
+        "template/security/element/host-app.json",
+        "template/security/element/dynamic-library.json",
+        "template/security/element/qnx-resmgr.json",
+        "template/security/element/linux-kmd.json",
+        "template/security/element/trust-boundary.json",
+        "template/security/element/container.json"
+      ]
+    },
+    {
+      "name": "Hardware",
+      "nodes": [
+        "template/security/element/hardware-display.json"
+      ]
+    },
+    {
+      "name": "Security Assets",
+      "nodes": [
+        "template/security/asset/asset.json",
+        "template/security/asset/file.json",
+        "template/security/asset/shared-memory.json",
+        "template/security/asset/register.json",
+        "template/security/asset/socket.json",
+        "template/security/asset/qnx-channel.json"
+      ]
+    },
+    {
+      "name": "Regular Assets",
+      "nodes": [
+        "template/security/asset/memory.json"
+      ]
+    }
+  ]
+}

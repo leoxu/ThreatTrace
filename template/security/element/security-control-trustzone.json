@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "nodes": [
+    {
+      "extends": "template/security/element/security-control.json",
+      "type": "Circle",
+      "properties": {
+        "name": "TrustZone / TEE",
+        "label": "trustzone-1",
+        "security-properties": {
+          "control_type": "TrustZone / TEE",
+          "description": "",
+          "requirement_id": ""
+        },
+        "z-order": 20
+      }
+    }
+  ],
+  "edges": []
+}

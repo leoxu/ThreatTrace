@@ -1,0 +1,241 @@
+{
+  "version": 1,
+  "_comment": [
+    "Runtime test templates, one entry per security control type.",
+    "A control of this type is always verified the same way, so the test is written",
+    "once here and instantiated per (control instance x covered interface).",
+    "Placeholders: {path} {device} {asset} {interface} {control} {config} {ioctl} {operation}.",
+    "expect speaks the runtime log's vocabulary: op, resource, cmd, ret.",
+    "ret accepts an errno name (EACCES), a number (-13), '0' (succeeded) or '!=0' (failed)."
+  ],
+  "controls": [
+    {
+      "control_type": "File Permission (ACL)",
+      "tests": [
+        {
+          "id": "unprivileged-open-denied",
+          "kind": "negative",
+          "title": "A process outside the owning group cannot open {path}",
+          "applies_to": ["ioctl", "filesystem", "sysfs", "socket-local", "pipe", "bus-uart"],
+          "requires": ["drop-privileges"],
+          "intent": "Only members of the node's owning group may open it ({config}).",
+          "steps": [
+            "Run as a user that is not in the owning group and has no override capability",
+            "open(\"{path}\", O_RDWR)"
+          ],
+          "expect": { "op": "open", "resource": "{path}", "ret": "EACCES" },
+          "evidence": "A refused open proves the OS is enforcing the mode, not the application."
+        },
+        {
+          "id": "authorised-open-allowed",
+          "kind": "positive",
+          "title": "A member of the owning group can open {path}",
+          "applies_to": ["ioctl", "filesystem", "sysfs", "socket-local"],
+          "requires": [],
+          "intent": "The permission must not be so tight that the legitimate client fails.",
+          "steps": ["Run as the intended client user", "open(\"{path}\", O_RDWR)"],
+          "expect": { "op": "open", "resource": "{path}", "ret": "0" },
+          "evidence": "Guards against a control that passes the negative test by denying everyone."
+        }
+      ]
+    },
+    {
+      "control_type": "Linux Capability",
+      "tests": [
+        {
+          "id": "missing-capability-denied",
+          "kind": "negative",
+          "title": "Without the required capability, {operation} on {asset} is refused",
+          "applies_to": ["ioctl", "sysfs", "filesystem", "mmio", "kernel-abi"],
+          "requires": ["drop-privileges"],
+          "intent": "The guarded operation requires a capability ({config}).",
+          "steps": [
+            "Run with the capability dropped (capsh --drop=...)",
+            "Perform {operation}: {ioctl}"
+          ],
+          "expect": { "op": "ioctl", "resource": "{path}", "cmd": "{ioctl}", "ret": "EPERM" },
+          "evidence": "Refusal at the syscall proves the kernel checks the capability."
+        }
+      ]
+    },
+    {
+      "control_type": "QNX Ability",
+      "tests": [
+        {
+          "id": "missing-ability-denied",
+          "kind": "negative",
+          "title": "Without the ability, {operation} on {asset} is refused",
+          "applies_to": ["ioctl", "message-passing", "filesystem"],
+          "requires": ["drop-privileges", "ability-control"],
+          "intent": "The resource manager gates this operation on a procmgr ability ({config}).",
+          "steps": [
+            "Start the client with the ability denied (procmgr_ability / on -A)",
+            "Perform {operation} against {path}"
+          ],
+          "expect": { "op": "ioctl", "resource": "{path}", "ret": "!=0" },
+          "evidence": "The resource manager must refuse the message, not just log it."
+        },
+        {
+          "id": "ability-limit-enforced",
+          "kind": "negative",
+          "title": "Resource limit on {asset} is enforced",
+          "applies_to": ["ioctl", "message-passing"],
+          "requires": ["ability-control"],
+          "intent": "An ability that caps a resource must actually cap it ({config}).",
+          "steps": [
+            "Allocate the permitted number of resources",
+            "Request one more"
+          ],
+          "expect": { "op": "ioctl", "resource": "{path}", "ret": "!=0" },
+          "evidence": "Proves the cap is enforced rather than advisory."
+        }
+      ]
+    },
+    {
+      "control_type": "Firewall Rule",
+      "tests": [
+        {
+          "id": "blocked-peer-refused",
+          "kind": "negative",
+          "title": "A peer outside the allowed set cannot reach {asset}",
+          "applies_to": ["socket-network", "service-api", "bus-can"],
+          "requires": ["second-client", "network-control"],
+          "intent": "Only the allowed peers may connect ({config}).",
+          "steps": ["From a host outside the allowed set, connect to {path}"],
+          "expect": { "op": "connect", "resource": "{path}", "ret": "!=0" },
+          "evidence": "A refused connection proves the filter is applied, not merely configured."
+        }
+      ]
+    },
+    {
+      "control_type": "Encryption",
+      "tests": [
+        {
+          "id": "no-plaintext-on-the-wire",
+          "kind": "negative",
+          "title": "No plaintext marker appears on {interface}",
+          "applies_to": ["socket-network", "service-api", "filesystem", "bus-can", "bus-spi"],
+          "requires": ["capture"],
+          "intent": "Payloads must be encrypted in transit or at rest ({config}).",
+          "steps": [
+            "Send a message containing a known marker string",
+            "Capture the traffic or read the stored bytes"
+          ],
+          "expect": { "absent": "{marker}" },
+          "evidence": "Finding the marker proves the data was not encrypted."
+        }
+      ]
+    },
+    {
+      "control_type": "Integrity Check",
+      "tests": [
+        {
+          "id": "tampered-input-rejected",
+          "kind": "negative",
+          "title": "A tampered request to {asset} is rejected",
+          "applies_to": ["ioctl", "mmap", "message-passing", "socket-network", "firmware", "bus-can"],
+          "requires": ["tamper-harness"],
+          "intent": "The receiver validates what it is given ({config}).",
+          "steps": [
+            "Build a valid request for {operation}",
+            "Corrupt one validated field (a length, an offset, a handle) and submit it"
+          ],
+          "expect": { "op": "ioctl", "resource": "{path}", "cmd": "{ioctl}", "ret": "!=0" },
+          "evidence": "Acceptance of a corrupted request means the check is missing or advisory."
+        }
+      ]
+    },
+    {
+      "control_type": "Audit Logging",
+      "tests": [
+        {
+          "id": "denied-attempt-is-logged",
+          "kind": "positive",
+          "title": "A refused access to {asset} produces an audit record",
+          "applies_to": ["ioctl", "filesystem", "socket-local", "socket-network", "message-passing"],
+          "requires": ["log-capture"],
+          "intent": "Security-relevant events must leave a record ({config}).",
+          "steps": [
+            "Trigger a refused access to {path}",
+            "Collect the audit sink for the same window"
+          ],
+          "expect": { "log_contains": "{path}" },
+          "evidence": "A control nobody can see the effect of cannot be operated."
+        }
+      ]
+    },
+    {
+      "control_type": "Secure Boot",
+      "tests": [
+        {
+          "id": "unsigned-image-rejected",
+          "kind": "negative",
+          "title": "An unsigned or altered image is not accepted",
+          "applies_to": ["firmware", "debug"],
+          "requires": ["unsigned-image", "recovery-path"],
+          "intent": "Only verified images may run ({config}).",
+          "steps": [
+            "Offer an image with one byte changed after signing",
+            "Attempt to load or boot it"
+          ],
+          "expect": { "op": "open", "resource": "{path}", "ret": "!=0" },
+          "evidence": "Loading it proves verification is absent or bypassable."
+        }
+      ]
+    },
+    {
+      "control_type": "TrustZone / TEE",
+      "tests": [
+        {
+          "id": "nonsecure-pointer-rejected",
+          "kind": "negative",
+          "title": "The secure world rejects a bad non-secure pointer",
+          "applies_to": ["smc-tee", "hypercall"],
+          "requires": ["tamper-harness"],
+          "intent": "Secure-world entry validates everything it is handed ({config}).",
+          "steps": [
+            "Issue the call with a shared-buffer pointer outside the agreed region",
+            "Observe the return"
+          ],
+          "expect": { "op": "ioctl", "ret": "!=0" },
+          "evidence": "A success here is a secure-world memory disclosure or corruption."
+        }
+      ]
+    },
+    {
+      "control_type": "Hardware Security Module (HSM)",
+      "tests": [
+        {
+          "id": "key-not-extractable",
+          "kind": "negative",
+          "title": "The key material cannot be read out of {asset}",
+          "applies_to": ["ioctl", "filesystem", "service-api", "bus-spi", "bus-i2c"],
+          "requires": [],
+          "intent": "Keys stay inside the module ({config}).",
+          "steps": ["Request the raw key through every documented interface"],
+          "expect": { "op": "ioctl", "resource": "{path}", "ret": "!=0" },
+          "evidence": "If the key can be read, the module is a key store in name only."
+        }
+      ]
+    },
+    {
+      "control_type": "CPU Address Space Isolation",
+      "tests": [
+        {
+          "id": "foreign-mapping-denied",
+          "kind": "negative",
+          "title": "A client cannot map memory it does not own through {asset}",
+          "applies_to": ["ioctl", "mmap", "mmio"],
+          "requires": ["second-client"],
+          "intent": "Mappings are constrained to the caller's own memory ({config}).",
+          "steps": [
+            "Obtain a handle or physical range belonging to another client",
+            "Attempt to map it through {path}"
+          ],
+          "expect": { "op": "ioctl", "resource": "{path}", "ret": "!=0" },
+          "evidence": "Success here defeats every other control on that memory."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "security-properties": {
+    "type": {
+      "default": "register",
+      "options": ["file", "register", "shared memory", "general asset"]
+    },
+    "address": "",
+    "access": {
+      "default": "read-write",
+      "options": ["read-only", "write-only", "read-write"]
+    },
+    "privilege": {
+      "default": "kernel",
+      "options": ["kernel", "user"]
+    },
+    "protection": {
+      "default": "none",
+      "options": ["none", "SMMU", "MPU"]
+    }
+  }
+}

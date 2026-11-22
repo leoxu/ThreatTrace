@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "name": "Func Call",
+  "edges": [
+    {
+      "properties": {
+        "type": "func call",
+        "description": ""
+      }
+    }
+  ]
+}

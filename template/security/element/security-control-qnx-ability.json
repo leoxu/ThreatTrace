@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "nodes": [
+    {
+      "extends": "template/security/element/security-control.json",
+      "type": "Circle",
+      "properties": {
+        "name": "QNX Ability",
+        "label": "qnx-ability-1",
+        "security-properties": {
+          "control_type": "QNX Ability",
+          "description": "",
+          "requirement_id": ""
+        },
+        "z-order": 20
+      }
+    }
+  ],
+  "edges": []
+}

@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "nodes": [
+    {
+      "extends": "template/hexagon.json",
+      "type": "Hexagon",
+      "properties": {
+        "name": "Display (HW)",
+        "class": "security hardware",
+        "color": "#34495e",
+        "text-color": "#ffffff",
+        "access-class": "hardware.display",
+        "z-order": 11,
+        "security-properties": {
+          "type": "hardware"
+        }
+      }
+    }
+  ],
+  "edges": []
+}

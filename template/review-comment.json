@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "nodes": [
+    {
+      "extends": "template/bubble.json",
+      "type": "Bubble",
+      "properties": {
+        "name": "Review Note",
+        "class": "review comment",
+        "layer": "comment",
+        "label": "review-1",
+        "subject": "Review question",
+        "review-status": "open",
+        "comments": [],
+        "color": "#fff59d",
+        "text-color": "#333333",
+        "fill": true,
+        "border": 2,
+        "z-order": 30,
+        "width": 220,
+        "height": 130
+      },
+      "inputs": [],
+      "outputs": [],
+      "sealed_inputs": true,
+      "sealed_outputs": true
+    }
+  ],
+  "edges": []
+}

@@ -1,0 +1,34 @@
+{
+  "version": 1,
+  "operations": {
+    "shared memory": ["shm_open", "shm_unlink", "mmap", "ftruncate", "shmctl"],
+    "file": [
+      "open", "openat", "close",
+      "read", "write", "pread", "pwrite",
+      "lseek", "fstat", "stat", "access",
+      "truncate", "ftruncate", "readlink",
+      "rename", "unlink", "chmod", "chown"
+    ],
+    "register": ["mmap", "munmap", "mprotect", "memory-read", "memory-write"],
+    "socket": [
+      "socket", "bind", "listen", "connect", "accept",
+      "send", "recv", "sendto", "recvfrom", "sendmsg", "recvmsg",
+      "getsockopt", "setsockopt", "shutdown", "getaddrinfo"
+    ],
+    "qnx channel": [
+      "ChannelCreate", "ChannelDestroy",
+      "ConnectAttach", "ConnectDetach",
+      "ChannelCreateExt", "ConnectAttachExt",
+      "MsgSend", "MsgSendv", "MsgSendvs",
+      "MsgReceive", "MsgReceivev",
+      "MsgReply", "MsgReplyv",
+      "MsgDeliverEvent", "MsgReadv", "MsgWritev", "MsgError"
+    ],
+    "memory": [
+      "mmap", "munmap", "mprotect", "madvise", "brk",
+      "malloc", "free", "calloc", "realloc", "memcpy", "memset",
+      "memory-read", "memory-write"
+    ],
+    "general asset": []
+  }
+}

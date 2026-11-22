@@ -1,0 +1,35 @@
+{
+  "version": 1,
+  "security-properties": {
+    "type": {
+      "default": "file",
+      "options": ["file", "register", "shared memory", "general asset"]
+    },
+    "path": "",
+    "owner": "",
+    "mode": {
+      "default": "rw-r--r--",
+      "options": [
+        "r--------",
+        "r--r--r--",
+        "rw-------",
+        "rw-r-----",
+        "rw-r--r--",
+        "rw-rw----",
+        "rwx------",
+        "rwxr-x---",
+        "rwxr-xr-x",
+        "rwxrwxrwx"
+      ]
+    },
+    "selinux-label": "",
+    "encryption": {
+      "default": "none",
+      "options": ["none", "at-rest", "full-disk"]
+    },
+    "immutable": {
+      "default": "false",
+      "options": ["false", "true"]
+    }
+  }
+}

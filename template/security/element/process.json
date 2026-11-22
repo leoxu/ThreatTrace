@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "nodes": [
+    {
+      "extends": "template/box.json",
+      "type": "Box",
+      "properties": {
+        "name": "Process",
+        "class": "security process",
+        "child-classes": [
+          "security dynamic-library",
+          "security host-app",
+          "security asset",
+          "process memory"
+        ],
+        "label": "process-1",
+        "fill": false,
+        "border": 3,
+        "z-order": 10,
+        "security-properties": {
+          "path": "",
+          "arguments": [],
+          "environments": {},
+          "abilities": [],
+          "uid": 0,
+          "gids": []
+        },
+        "access-class": "software.process"
+      }
+    }
+  ],
+  "edges": []
+}

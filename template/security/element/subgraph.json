@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "nodes": [
+    {
+      "extends": "template/node.json",
+      "type": "Subgraph",
+      "properties": {
+        "name": "Subgraph",
+        "class": "security subgraph",
+        "color": "#8e7cc3",
+        "z-order": 11,
+        "width": 160,
+        "height": 90,
+        "security-properties": {
+          "state": "unbound",
+          "mode": "reference",
+          "source": "",
+          "source-hash": "",
+          "bound-at": "",
+          "interface": [
+            { "name": "in", "dir": "in", "expects": "" },
+            { "name": "out", "dir": "out", "expects": "" }
+          ]
+        }
+      },
+      "inputs": ["in"],
+      "outputs": ["out"],
+      "sealed_inputs": true,
+      "sealed_outputs": true
+    }
+  ],
+  "edges": []
+}

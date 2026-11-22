@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "security-properties": {
+    "type": {
+      "default": "qnx channel",
+      "options": ["qnx channel"]
+    },
+    "name": "",
+    "flags": {
+      "default": "none",
+      "options": ["none", "CHANNEL_PRIVATE", "CHANNEL_FIXED_POOL", "CHANNEL_UNBLOCK_TIMER"]
+    },
+    "nd": ""
+  }
+}

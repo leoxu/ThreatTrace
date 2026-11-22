@@ -1,0 +1,12 @@
+{
+  "_comment": "Properties listed here are hidden from the node property editor by default. These are 2D-shape layout/rendering properties that are not relevant to security modeling. Use the 'Show hidden' toggle in the property panel to reveal them.",
+  "hidden_node_properties": [
+    "fill",
+    "width",
+    "height",
+    "z-order",
+    "label",
+    "child-classes",
+    "type"
+  ]
+}

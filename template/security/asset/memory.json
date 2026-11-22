@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "nodes": [
+    {
+      "extends": "template/box.json",
+      "properties": {
+        "name": "Memory",
+        "class": "process memory",
+        "label": "memory-1",
+        "color": "#9e9e9e",
+        "z-order": 11,
+        "width": 120,
+        "height": 80,
+        "security-properties": {
+          "type": "memory",
+          "owner": ""
+        }
+      },
+      "inputs": [
+        "read",
+        "read/write"
+      ],
+      "outputs": [],
+      "sealed_inputs": true,
+      "sealed_outputs": true
+    }
+  ],
+  "edges": []
+}

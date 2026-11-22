@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "nodes": [
+    {
+      "extends": "template/circle.json",
+      "type": "Circle",
+      "properties": {
+        "name": "Security Control",
+        "class": "security control",
+        "child-classes": [
+          "security asset"
+        ],
+        "label": "security-control-1",
+        "color": "#e53935",
+        "fill": false,
+        "border": 4,
+        "z-order": 20,
+        "width": 73,
+        "height": 73,
+        "security-properties": {
+          "controls": []
+        }
+      },
+      "inputs": [],
+      "outputs": []
+    }
+  ],
+  "edges": []
+}

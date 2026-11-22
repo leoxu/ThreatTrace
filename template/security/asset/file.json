@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "nodes": [
+    {
+      "extends": "template/security/asset/asset.json",
+      "properties": {
+        "name": "File",
+        "label": "file-1",
+        "security-properties": {
+          "type": "file",
+          "path": "",
+          "owner": "",
+          "mode": "rw-r--r--",
+          "selinux-label": "",
+          "encryption": "none",
+          "immutable": "false"
+        }
+      },
+      "inputs": [
+        "in",
+        "in-2",
+        "in-3",
+        "in-4"
+      ],
+      "outputs": [],
+      "sealed_outputs": true
+    }
+  ],
+  "edges": []
+}

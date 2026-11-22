@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "security-properties": {
+    "type": {
+      "default": "shared memory",
+      "options": [
+        "file",
+        "register",
+        "shared memory",
+        "general asset"
+      ]
+    },
+    "name": "",
+    "owner": "",
+    "mode": {
+      "default": "0600",
+      "options": [
+        "0400",
+        "0440",
+        "0600",
+        "0640",
+        "0660"
+      ]
+    },
+    "encryption": {
+      "default": "none",
+      "options": [
+        "none",
+        "encrypted"
+      ]
+    }
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "security-properties": {
+    "control_type": {
+      "default": "File Permission (ACL)",
+      "options": [
+        "File Permission (ACL)",
+        "QNX Ability",
+        "Linux Capability",
+        "Firewall Rule",
+        "Encryption",
+        "Integrity Check",
+        "Audit Logging",
+        "Secure Boot",
+        "TrustZone / TEE",
+        "Hardware Security Module (HSM)",
+        "CPU Address Space Isolation"
+      ]
+    },
+    "description": "",
+    "requirement_id": ""
+  }
+}

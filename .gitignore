@@ -1,0 +1,14 @@
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+.claude/
+*~
+\#*\#
+.DS_Store
+
+# root-level scratch project files (subdirectory json/csv, e.g. template/, tm7/, examples/, are kept)
+/*.json
+/*.csv
+/project-*

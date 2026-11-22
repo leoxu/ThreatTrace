@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "nodes": [
+    {
+      "id": "proxy-1",
+      "extends": "template/box.json",
+      "type": "Box",
+      "properties": {
+        "name": "Proxy",
+        "class": "security proxy",
+        "label": "proxy-1",
+        "fill": false,
+        "z-order": 10,
+        "color": "#9b59b6",
+        "security-properties": {
+          "source": ""
+        },
+        "access-class": "software.proxy"
+      }
+    }
+  ],
+  "edges": []
+}

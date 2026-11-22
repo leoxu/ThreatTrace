@@ -1,0 +1,32 @@
+{
+  "version": 1,
+  "nodes": [
+    {
+      "extends": "template/security/asset/asset.json",
+      "properties": {
+        "name": "Socket",
+        "label": "socket-1",
+        "security-properties": {
+          "type": "socket",
+          "domain": "AF_INET",
+          "sock-type": "SOCK_STREAM",
+          "protocol": "",
+          "address": "",
+          "port": "",
+          "owner": "",
+          "mode": "0600",
+          "encryption": "none"
+        }
+      },
+      "inputs": [
+        "in",
+        "in-2",
+        "in-3",
+        "in-4"
+      ],
+      "outputs": [],
+      "sealed_outputs": true
+    }
+  ],
+  "edges": []
+}

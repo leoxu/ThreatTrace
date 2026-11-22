@@ -1,0 +1,284 @@
+{
+  "version": 1,
+  "categories": [
+    {
+      "name": "Ownership",
+      "type": "ownership",
+      "sub-types": [
+        "owner"
+      ]
+    },
+    {
+      "name": "Internal",
+      "type": "internal func call",
+      "sub-types": [
+        "internal func call"
+      ]
+    },
+    {
+      "name": "Data Flow",
+      "type": "IPC",
+      "sub-types": [
+        "send",
+        "recv",
+        "sendto",
+        "recvfrom",
+        "sendmsg",
+        "recvmsg",
+        "ioctl",
+        "mq_send",
+        "mq_receive",
+        "msgsnd",
+        "msgrcv"
+      ]
+    },
+    {
+      "name": "File Access",
+      "type": "Asset Operation",
+      "sub-types": [
+        "open",
+        "openat",
+        "close",
+        "lseek",
+        "read",
+        "write",
+        "pread",
+        "pwrite",
+        "fstat",
+        "stat",
+        "access",
+        "truncate",
+        "ftruncate",
+        "readlink",
+        "rename",
+        "unlink",
+        "mkdir",
+        "rmdir",
+        "chmod",
+        "chown"
+      ]
+    },
+    {
+      "name": "Memory",
+      "type": "Asset Operation",
+      "sub-types": [
+        "memory-read",
+        "memory-write",
+        "mmap",
+        "munmap",
+        "mprotect",
+        "madvise",
+        "brk",
+        "malloc",
+        "free",
+        "calloc",
+        "realloc",
+        "memcpy",
+        "memset"
+      ]
+    },
+    {
+      "name": "Network Setup",
+      "type": "Asset Operation",
+      "sub-types": [
+        "socket",
+        "bind",
+        "listen",
+        "connect",
+        "accept",
+        "getsockopt",
+        "setsockopt",
+        "shutdown",
+        "getaddrinfo",
+        "pipe",
+        "socketpair"
+      ]
+    },
+    {
+      "name": "IPC Setup",
+      "type": "Asset Operation",
+      "sub-types": [
+        "mq_open",
+        "mq_close",
+        "shm_open",
+        "shm_unlink",
+        "shmget",
+        "shmat",
+        "shmdt",
+        "shmctl",
+        "semget",
+        "semop",
+        "msgget"
+      ]
+    },
+    {
+      "name": "Process",
+      "type": "internal func call",
+      "sub-types": [
+        "fork",
+        "clone",
+        "vfork",
+        "exec",
+        "execve",
+        "execvp",
+        "execvpe",
+        "exit",
+        "_exit",
+        "abort",
+        "wait",
+        "waitpid",
+        "waitid",
+        "kill",
+        "signal",
+        "sigaction",
+        "raise"
+      ]
+    },
+    {
+      "name": "Sync",
+      "type": "internal func call",
+      "sub-types": [
+        "pthread_create",
+        "pthread_join",
+        "pthread_exit",
+        "pthread_mutex_lock",
+        "pthread_mutex_unlock",
+        "pthread_mutex_trylock",
+        "pthread_cond_wait",
+        "pthread_cond_signal",
+        "pthread_cond_broadcast",
+        "sem_open",
+        "sem_wait",
+        "sem_post",
+        "sem_close",
+        "futex"
+      ]
+    },
+    {
+      "name": "QNX Channel",
+      "type": "Asset Operation",
+      "sub-types": [
+        "ChannelCreate",
+        "ChannelDestroy",
+        "ConnectAttach",
+        "ConnectDetach",
+        "ChannelCreateExt",
+        "ConnectAttachExt"
+      ]
+    },
+    {
+      "name": "QNX Message Passing",
+      "type": "Asset Operation",
+      "sub-types": [
+        "MsgSend",
+        "MsgSendv",
+        "MsgSendvs",
+        "MsgReceive",
+        "MsgReceivev",
+        "MsgReply",
+        "MsgReplyv",
+        "MsgDeliverEvent",
+        "MsgReadv",
+        "MsgWritev",
+        "MsgError"
+      ]
+    },
+    {
+      "name": "QNX Message Passing",
+      "type": "IPC",
+      "sub-types": [
+        "MsgSend",
+        "MsgSendv",
+        "MsgSendvs",
+        "MsgReceive",
+        "MsgReceivev",
+        "MsgReply",
+        "MsgReplyv",
+        "MsgDeliverEvent",
+        "MsgReadv",
+        "MsgWritev",
+        "MsgError"
+      ]
+    },
+    {
+      "name": "Syscall",
+      "type": "syscall",
+      "sub-types": [
+        "read",
+        "write",
+        "open",
+        "close",
+        "stat",
+        "fstat",
+        "lstat",
+        "poll",
+        "lseek",
+        "mmap",
+        "mprotect",
+        "munmap",
+        "brk",
+        "ioctl",
+        "pread64",
+        "pwrite64",
+        "readv",
+        "writev",
+        "access",
+        "dup",
+        "dup2",
+        "nanosleep",
+        "getpid",
+        "getuid",
+        "socket",
+        "connect",
+        "accept",
+        "sendto",
+        "recvfrom",
+        "bind",
+        "listen",
+        "getsockname",
+        "getpeername",
+        "setsockopt",
+        "getsockopt",
+        "clone",
+        "fork",
+        "execve",
+        "exit",
+        "wait4",
+        "kill",
+        "uname",
+        "fcntl",
+        "flock",
+        "fsync",
+        "truncate",
+        "ftruncate",
+        "getcwd",
+        "chdir",
+        "mkdir",
+        "rmdir",
+        "unlink",
+        "rename",
+        "chmod",
+        "chown",
+        "getdents",
+        "select",
+        "epoll_wait",
+        "epoll_ctl",
+        "prctl",
+        "ptrace",
+        "futex",
+        "sched_yield",
+        "setuid",
+        "setgid",
+        "getgroups",
+        "setgroups"
+      ]
+    },
+    {
+      "name": "Alias",
+      "type": "alias",
+      "sub-types": [
+        "alias"
+      ]
+    }
+  ]
+}

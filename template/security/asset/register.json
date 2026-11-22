@@ -1,0 +1,28 @@
+{
+  "version": 1,
+  "nodes": [
+    {
+      "extends": "template/security/asset/shared-memory.json",
+      "properties": {
+        "name": "Register",
+        "label": "register-1",
+        "security-properties": {
+          "type": "register",
+          "address": "",
+          "access": "read-write",
+          "privilege": "kernel",
+          "protection": "none"
+        }
+      },
+      "inputs": [
+        "in",
+        "in-2",
+        "in-3",
+        "in-4"
+      ],
+      "outputs": [],
+      "sealed_outputs": true
+    }
+  ],
+  "edges": []
+}

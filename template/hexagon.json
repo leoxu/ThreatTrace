@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "nodes": [
+    {
+      "extends": "template/node.json",
+      "type": "Hexagon",
+      "properties": {
+        "color": "#e74c3c"
+      }
+    }
+  ],
+  "edges": []
+}

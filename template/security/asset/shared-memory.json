@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "nodes": [
+    {
+      "extends": "template/box.json",
+      "properties": {
+        "name": "Shared Memory",
+        "class": "security asset",
+        "label": "shared-memory-1",
+        "z-order": 11,
+        "security-properties": {
+          "type": "shared memory",
+          "name": "",
+          "owner": "",
+          "mode": "0600",
+          "encryption": "none"
+        }
+      },
+      "inputs": [
+        "in",
+        "in-2",
+        "in-3",
+        "in-4"
+      ],
+      "outputs": [],
+      "sealed_outputs": true
+    }
+  ],
+  "edges": []
+}

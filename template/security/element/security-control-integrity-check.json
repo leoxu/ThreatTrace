@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "nodes": [
+    {
+      "extends": "template/security/element/security-control.json",
+      "type": "Circle",
+      "properties": {
+        "name": "Integrity Check",
+        "label": "integrity-check-1",
+        "security-properties": {
+          "control_type": "Integrity Check",
+          "description": "Kernel-side validation of client-supplied data before the hardware or a privileged consumer acts on it: checksum/signature verification for stored or transferred content, and structural validation for submitted command streams — parse the buffer, reject opcodes, offsets and sizes that fall outside the pinned handle, bounds-check identifiers (e.g. syncpoint IDs and increments), and patch relocations with addresses the kernel computed from validated handles so a client pointer is only ever a handle + offset, never a raw address.",
+          "requirement_id": ""
+        },
+        "z-order": 20
+      }
+    }
+  ],
+  "edges": []
+}

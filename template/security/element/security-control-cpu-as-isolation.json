@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "nodes": [
+    {
+      "extends": "template/security/element/security-control.json",
+      "type": "Circle",
+      "properties": {
+        "name": "CPU AS Isolation",
+        "label": "cpu-as-isolation-1",
+        "security-properties": {
+          "control_type": "CPU Address Space Isolation",
+          "description": "",
+          "requirement_id": ""
+        },
+        "z-order": 20
+      }
+    }
+  ],
+  "edges": []
+}

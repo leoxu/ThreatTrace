@@ -1,0 +1,395 @@
+{
+  "version": 1,
+  "_comment": [
+    "Predefined interface categories: HOW an asset's access channel works.",
+    "Orthogonal to access-class (WHO may use it) and to operations (WHAT it exposes).",
+    "Each category declares its own fields; a field with \"maps-to\": \"path\" is stored",
+    "in the interface's existing path attribute rather than duplicated.",
+    "Free-form categories are tolerated — an id not listed here still loads."
+  ],
+  "categories": [
+    {
+      "id": "ioctl",
+      "label": "Device node (ioctl / read / write)",
+      "group": "OS interface",
+      "description": "A character device reached through a /dev node: open, then ioctl commands and/or read/write.",
+      "access-class": "software.*",
+      "fields": [
+        { "name": "dev-node", "label": "Device node", "required": true, "maps-to": "path",
+          "placeholder": "/dev/mydev0", "pattern": "^/dev/.+",
+          "help": "The path userspace opens. The runtime log matches interfaces by this." },
+        { "name": "ioctl-prefix", "label": "ioctl command prefix", "required": false,
+          "placeholder": "MYDEV_IOCTL_" },
+        { "name": "driver", "label": "Owning driver", "required": false, "placeholder": "mydrv" }
+      ],
+      "default-operations": ["open", "ioctl", "close"],
+      "threat-hints": [
+        "command code validation and unknown-cmd handling",
+        "argument struct copy in/out, size and bounds",
+        "user-pointer TOCTOU between validation and use",
+        "file descriptor retained across a privilege change"
+      ],
+      "relevant-controls": ["File Permission (ACL)", "Linux Capability", "QNX Ability",
+                            "Integrity Check", "Audit Logging"]
+    },
+    {
+      "id": "mmap",
+      "label": "Mapped memory (mmap / dma-buf)",
+      "group": "OS interface",
+      "description": "A memory region mapped into an address space. Access needs no syscall, so nothing mediates individual reads and writes.",
+      "access-class": "software.*",
+      "fields": [
+        { "name": "backing", "label": "Backed by", "required": true,
+          "placeholder": "dma-buf fd / anonymous" },
+        { "name": "protection", "label": "Protection", "required": false, "placeholder": "rw-" },
+        { "name": "address-space", "label": "Address space", "required": false,
+          "placeholder": "CPU VA / device VA / IPA" }
+      ],
+      "default-operations": ["mmap", "munmap"],
+      "threat-hints": [
+        "aliasing: two mappings of the same physical pages with different rights",
+        "use-after-revoke — the holder keeps the mapping after the owner frees it",
+        "page permissions weaker than the data's integrity requirement",
+        "no mediation per access once mapped"
+      ],
+      "relevant-controls": ["CPU Address Space Isolation",
+                            "Encryption", "Integrity Check"]
+    },
+    {
+      "id": "filesystem",
+      "label": "Filesystem path",
+      "group": "OS interface",
+      "description": "A regular file or directory reached by path.",
+      "access-class": "software.*",
+      "fields": [
+        { "name": "path", "label": "Path", "required": true, "maps-to": "path",
+          "placeholder": "/var/lib/app/keys.db" },
+        { "name": "mode", "label": "Expected mode/owner", "required": false, "placeholder": "0600 root:root" }
+      ],
+      "default-operations": ["open", "read", "write", "close"],
+      "threat-hints": ["symlink and path-traversal races", "permissions and umask",
+                       "TOCTOU between stat and open", "residual data after delete"],
+      "relevant-controls": ["File Permission (ACL)", "Encryption", "Integrity Check"]
+    },
+    {
+      "id": "sysfs",
+      "label": "sysfs / procfs / configfs",
+      "group": "OS interface",
+      "description": "A kernel-exported text control or status file.",
+      "access-class": "software.*",
+      "fields": [
+        { "name": "path", "label": "Path", "required": true, "maps-to": "path",
+          "placeholder": "/sys/kernel/debug/mydrv/…", "pattern": "^/(sys|proc)/.+" }
+      ],
+      "default-operations": ["read", "write"],
+      "threat-hints": ["world-readable status leaking layout or keys",
+                       "writable tunable that changes security posture",
+                       "present only on debug builds"],
+      "relevant-controls": ["File Permission (ACL)", "Linux Capability", "Audit Logging"]
+    },
+    {
+      "id": "socket-network",
+      "label": "Network socket",
+      "group": "IPC / network",
+      "description": "A socket reachable over a network: remote parties can attempt to connect.",
+      "access-class": "software.*",
+      "fields": [
+        { "name": "protocol", "label": "Protocol", "required": true, "placeholder": "TCP / UDP / QUIC" },
+        { "name": "port", "label": "Port", "required": true, "placeholder": "8443" },
+        { "name": "bind-address", "label": "Bind address", "required": false, "placeholder": "0.0.0.0" }
+      ],
+      "default-operations": ["connect", "send", "recv", "close"],
+      "threat-hints": ["remote unauthenticated reachability", "spoofing and replay on the wire",
+                       "parser exposed to attacker-controlled bytes", "resource exhaustion / DoS"],
+      "relevant-controls": ["Firewall Rule", "Encryption", "Integrity Check", "Audit Logging"]
+    },
+    {
+      "id": "socket-local",
+      "label": "Local socket (unix domain)",
+      "group": "IPC / network",
+      "description": "A socket on the local machine: peer credentials are available, file descriptors can be passed.",
+      "access-class": "software.*",
+      "fields": [
+        { "name": "socket-path", "label": "Socket path or abstract name", "required": true,
+          "maps-to": "path", "placeholder": "/run/app.sock" },
+        { "name": "peer-check", "label": "Peer credential check", "required": false,
+          "placeholder": "SO_PEERCRED uid==0" }
+      ],
+      "default-operations": ["connect", "send", "recv", "close"],
+      "threat-hints": ["missing peer-credential check", "file descriptor passing widens access",
+                       "socket file permissions", "any local process may connect"],
+      "relevant-controls": ["File Permission (ACL)", "Linux Capability", "QNX Ability", "Audit Logging"]
+    },
+    {
+      "id": "message-passing",
+      "label": "Message passing (QNX / binder / D-Bus)",
+      "group": "IPC / network",
+      "description": "A kernel-mediated message channel where each message is a separate authorization decision.",
+      "access-class": "software.*",
+      "fields": [
+        { "name": "channel", "label": "Channel / service name", "required": true,
+          "placeholder": "/dev/name/local/svc" },
+        { "name": "mechanism", "label": "Mechanism", "required": false,
+          "placeholder": "QNX MsgSend / binder / D-Bus" },
+        { "name": "auth", "label": "Per-message check", "required": false,
+          "placeholder": "ability check / SELinux label" }
+      ],
+      "default-operations": ["connect", "send", "reply", "disconnect"],
+      "threat-hints": ["missing per-message authorization", "connection id reuse or spoofing",
+                       "unbounded message size or queue", "confused deputy via a forwarded request"],
+      "relevant-controls": ["QNX Ability", "Linux Capability", "Audit Logging", "Integrity Check"]
+    },
+    {
+      "id": "pipe",
+      "label": "Pipe / FIFO",
+      "group": "IPC / network",
+      "description": "A byte stream between processes, named or anonymous.",
+      "access-class": "software.*",
+      "fields": [
+        { "name": "fifo-path", "label": "FIFO path (blank = anonymous)", "required": false,
+          "maps-to": "path", "placeholder": "/run/app.fifo" }
+      ],
+      "default-operations": ["read", "write", "close"],
+      "threat-hints": ["no message framing — desynchronisation", "writer identity unknown",
+                       "blocking behaviour as a DoS lever"],
+      "relevant-controls": ["File Permission (ACL)", "Audit Logging"]
+    },
+    {
+      "id": "signal-event",
+      "label": "Signal / event / fence",
+      "group": "IPC / network",
+      "description": "Notification without payload: signals, eventfd, syncpoints, fences, interrupts.",
+      "access-class": "software.*",
+      "fields": [
+        { "name": "event-kind", "label": "Kind", "required": true,
+          "placeholder": "syncpoint / fence / eventfd / signal / IRQ" },
+        { "name": "identifier", "label": "Identifier", "required": false, "placeholder": "syncpt 42" }
+      ],
+      "default-operations": ["wait", "signal"],
+      "threat-hints": ["forged or replayed notification", "wait starvation and missed wakeups",
+                       "notification used as a covert channel",
+                       "ordering assumptions between signal and data"],
+      "relevant-controls": ["Integrity Check", "Audit Logging"]
+    },
+    {
+      "id": "hypercall",
+      "label": "Hypercall / VM exit",
+      "group": "Privilege crossing",
+      "description": "A guest calling the hypervisor — the input crosses into a strictly higher privilege level.",
+      "access-class": "software.*",
+      "fields": [
+        { "name": "function-id", "label": "Function id / device", "required": true,
+          "placeholder": "HVC 0xC4000001 / virtio-dev" },
+        { "name": "guest", "label": "Calling guest", "required": false, "placeholder": "Guest VM 1" }
+      ],
+      "default-operations": ["hypercall"],
+      "threat-hints": ["guest-controlled arguments parsed at hypervisor privilege",
+                       "shared ring buffer readable or writable by the guest after validation",
+                       "one guest affecting another through shared state",
+                       "hypercall available to an unprivileged guest process"],
+      "relevant-controls": ["CPU Address Space Isolation", "Integrity Check", "Secure Boot", "Audit Logging"]
+    },
+    {
+      "id": "smc-tee",
+      "label": "Secure monitor call (TrustZone / TEE)",
+      "group": "Privilege crossing",
+      "description": "Normal world calling into the secure world.",
+      "access-class": "software.*",
+      "fields": [
+        { "name": "function-id", "label": "SMC function id / TA UUID", "required": true,
+          "placeholder": "0x83000001 / 8aaaf200-2450-11e4-…" },
+        { "name": "shared-buffer", "label": "Shared buffer", "required": false,
+          "placeholder": "non-secure memory, 4 KiB" }
+      ],
+      "default-operations": ["smc"],
+      "threat-hints": ["non-secure pointer dereferenced in the secure world",
+                       "shared buffer mutated after validation (double fetch)",
+                       "secure world trusting a normal-world session id",
+                       "denial of service against the secure monitor"],
+      "relevant-controls": ["TrustZone / TEE", "Secure Boot", "Integrity Check",
+                            "Hardware Security Module (HSM)"]
+    },
+    {
+      "id": "mmio",
+      "label": "MMIO / register window",
+      "group": "Hardware",
+      "description": "CPU access to device registers through a physical address window. No OS mediates individual accesses.",
+      "access-class": "software.kernel",
+      "fields": [
+        { "name": "range", "label": "Physical range / BAR", "required": true,
+          "placeholder": "0x54000000-0x5400ffff / BAR0" },
+        { "name": "device", "label": "Device", "required": false, "placeholder": "mydev" }
+      ],
+      "default-operations": ["read", "write"],
+      "threat-hints": ["register write reachable from userspace via a mapping",
+                       "registers that reconfigure isolation (SMMU, firewall, clocks)",
+                       "read of a register exposing keys or addresses",
+                       "no bounds on the mapped window"],
+      "relevant-controls": ["CPU Address Space Isolation", "Linux Capability", "Secure Boot"]
+    },
+    {
+      "id": "dma",
+      "label": "DMA / bus master",
+      "group": "Hardware",
+      "description": "A device reading or writing memory on its own initiative. The CPU is not in the path, so software permissions do not apply.",
+      "access-class": "hardware.*",
+      "fields": [
+        { "name": "master", "label": "Bus master / engine", "required": true,
+          "placeholder": "device / DMA engine" },
+        { "name": "smmu-stream", "label": "SMMU stream / ASID", "required": false, "placeholder": "sid 0x12" }
+      ],
+      "default-operations": ["read", "write"],
+      "threat-hints": ["engine reaching memory outside its intended aperture",
+                       "translation disabled, bypassed or misconfigured",
+                       "descriptor or command buffer supplying attacker-chosen addresses",
+                       "device access outliving the buffer's owner"],
+      "relevant-controls": ["CPU Address Space Isolation",
+                            "Integrity Check", "Secure Boot"]
+    },
+    {
+      "id": "kernel-abi",
+      "label": "Kernel ABI (in-kernel call)",
+      "group": "OS interface",
+      "description": "A call between kernel components — no user/kernel boundary is crossed.",
+      "access-class": "software.kernel",
+      "fields": [
+        { "name": "symbol", "label": "Symbol / callback", "required": true,
+          "placeholder": "mydev_channel_submit()" },
+        { "name": "module", "label": "Providing module", "required": false, "placeholder": "mydrv.ko" }
+      ],
+      "default-operations": ["call"],
+      "threat-hints": ["caller assumed trusted but reachable from a user path",
+                       "no revalidation of data already validated elsewhere",
+                       "callback registered by a less privileged component"],
+      "relevant-controls": ["Integrity Check", "Secure Boot"]
+    },
+    {
+      "id": "debug",
+      "label": "Debug / maintenance interface",
+      "group": "Maintenance",
+      "description": "An interface intended for development: its presence in production is itself the finding.",
+      "access-class": "software.*",
+      "fields": [
+        { "name": "mechanism", "label": "Mechanism", "required": true,
+          "placeholder": "debugfs / ptrace / kgdb / JTAG" },
+        { "name": "production", "label": "Present in production?", "required": false,
+          "placeholder": "no — fused off" }
+      ],
+      "default-operations": ["read", "write"],
+      "threat-hints": ["shipped enabled by accident", "full memory or register access",
+                       "bypasses every other control", "no audit trail"],
+      "relevant-controls": ["Secure Boot", "File Permission (ACL)", "Audit Logging"]
+    },
+    {
+      "id": "firmware",
+      "label": "Firmware / boot image",
+      "group": "Maintenance",
+      "description": "A firmware image, boot partition or update channel. Authenticity and rollback matter more than access control.",
+      "access-class": "software.*",
+      "fields": [
+        { "name": "image", "label": "Image / partition", "required": true,
+          "placeholder": "gsp.bin / boot0" },
+        { "name": "signing", "label": "Signing / verification", "required": false,
+          "placeholder": "RSA-3072, verified by BR" }
+      ],
+      "default-operations": ["load", "verify", "update"],
+      "threat-hints": ["unsigned or unverified image accepted", "rollback to a vulnerable version",
+                       "update channel writable by a lower-privileged component",
+                       "verification performed after use"],
+      "relevant-controls": ["Secure Boot", "Integrity Check", "Encryption",
+                            "Hardware Security Module (HSM)"]
+    },
+    {
+      "id": "service-api",
+      "label": "Service API (HTTP / gRPC)",
+      "group": "IPC / network",
+      "description": "A higher-level request/response API exposed by a service.",
+      "access-class": "software.*",
+      "fields": [
+        { "name": "endpoint", "label": "Endpoint", "required": true,
+          "placeholder": "https://host/api/v1/keys", "maps-to": "path" },
+        { "name": "auth", "label": "Authentication", "required": false, "placeholder": "mTLS / bearer token" }
+      ],
+      "default-operations": ["request"],
+      "threat-hints": ["missing or weak authentication", "authorization checked per route, not per object",
+                       "input parsed before authorization", "verbose errors leaking internals"],
+      "relevant-controls": ["Encryption", "Firewall Rule", "Audit Logging", "Integrity Check"]
+    },
+
+    { "id": "bus-uart", "label": "UART / serial", "group": "Physical bus",
+      "description": "A serial line. Physical access is the only prerequisite.",
+      "access-class": "hardware.*",
+      "fields": [
+        { "name": "device", "label": "Device / port", "required": true, "placeholder": "/dev/ttyTHS0", "maps-to": "path" },
+        { "name": "baud", "label": "Baud", "required": false, "placeholder": "115200" },
+        { "name": "console", "label": "Console attached?", "required": false, "placeholder": "yes — login shell" }
+      ],
+      "default-operations": ["read", "write"],
+      "threat-hints": ["console shell reachable with physical access", "no authentication on the line",
+                       "bootloader prompt exposed", "debug output leaking secrets"],
+      "relevant-controls": ["Secure Boot", "File Permission (ACL)", "Audit Logging"] },
+
+    { "id": "bus-usb", "label": "USB", "group": "Physical bus",
+      "description": "A USB port or gadget interface: an attacker can attach an arbitrary device.",
+      "access-class": "hardware.*",
+      "fields": [
+        { "name": "role", "label": "Role", "required": true, "placeholder": "host / device (gadget)" },
+        { "name": "id", "label": "VID:PID or interface class", "required": false, "placeholder": "0955:7020 / HID" }
+      ],
+      "default-operations": ["enumerate", "transfer"],
+      "threat-hints": ["untrusted device enumerated automatically", "driver parsing attacker-supplied descriptors",
+                       "gadget exposing storage or network to the host", "power/BadUSB class confusion"],
+      "relevant-controls": ["File Permission (ACL)", "Integrity Check", "Secure Boot", "Audit Logging"] },
+
+    { "id": "bus-pcie", "label": "PCIe", "group": "Physical bus",
+      "description": "A PCIe function. An endpoint is a bus master and can DMA unless translation constrains it.",
+      "access-class": "hardware.*",
+      "fields": [
+        { "name": "bdf", "label": "Bus:Device.Function", "required": true, "placeholder": "0000:01:00.0" },
+        { "name": "bars", "label": "BARs exposed", "required": false, "placeholder": "BAR0 16 MiB" }
+      ],
+      "default-operations": ["config-read", "config-write", "dma"],
+      "threat-hints": ["endpoint DMA outside its aperture", "config space writable by a guest",
+                       "hot-plugged untrusted endpoint", "ATS/IOMMU bypass"],
+      "relevant-controls": ["CPU Address Space Isolation", "Secure Boot"] },
+
+    { "id": "bus-i2c", "label": "I²C", "group": "Physical bus",
+      "description": "A shared two-wire bus: every device on it can see and drive the bus.",
+      "access-class": "hardware.*",
+      "fields": [
+        { "name": "bus", "label": "Bus", "required": true, "placeholder": "i2c-1" },
+        { "name": "address", "label": "Address", "required": true, "placeholder": "0x50" }
+      ],
+      "default-operations": ["read", "write"],
+      "threat-hints": ["any device on the bus can impersonate another address",
+                       "no authentication or integrity on the wire",
+                       "EEPROM holding calibration or keys is writable",
+                       "bus lock-up as a denial of service"],
+      "relevant-controls": ["Integrity Check", "Encryption", "Secure Boot"] },
+
+    { "id": "bus-spi", "label": "SPI", "group": "Physical bus",
+      "description": "A chip-select addressed bus, typically to flash or a sensor.",
+      "access-class": "hardware.*",
+      "fields": [
+        { "name": "bus", "label": "Bus", "required": true, "placeholder": "spi0" },
+        { "name": "chip-select", "label": "Chip select", "required": true, "placeholder": "cs0" }
+      ],
+      "default-operations": ["transfer"],
+      "threat-hints": ["flash holding boot code is writable at runtime",
+                       "no integrity on the transfer", "physical probing of the lines",
+                       "shared bus with a less trusted peripheral"],
+      "relevant-controls": ["Secure Boot", "Integrity Check", "Encryption"] },
+
+    { "id": "bus-can", "label": "CAN / CAN-FD", "group": "Physical bus",
+      "description": "A broadcast vehicle bus with no built-in authentication.",
+      "access-class": "hardware.*",
+      "fields": [
+        { "name": "interface", "label": "Interface", "required": true, "placeholder": "can0" },
+        { "name": "ids", "label": "Message IDs", "required": false, "placeholder": "0x100-0x1FF" }
+      ],
+      "default-operations": ["send", "receive"],
+      "threat-hints": ["any node can inject any message id", "replay of recorded frames",
+                       "bus flooding denial of service", "no sender authentication"],
+      "relevant-controls": ["Integrity Check", "Firewall Rule", "Audit Logging", "Encryption"] }
+  ]
+}

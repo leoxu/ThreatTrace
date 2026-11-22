@@ -1,0 +1,9 @@
+{
+  "version": 1,
+  "security-properties": {
+    "type": {
+      "default": "general asset",
+      "options": ["file", "register", "shared memory", "socket", "general asset"]
+    }
+  }
+}

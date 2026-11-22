@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "nodes": [
+    {
+      "id": "trust-boundary-1",
+      "extends": "template/boundary.json",
+      "type": "Boundary",
+      "properties": {
+        "name": "Trust Boundary",
+        "color": "#ff0000",
+        "class": "security trust-boundary",
+        "label": "trust-boundary-1",
+        "z-order": 1,
+        "security-properties": {
+          "description": "",
+          "trust-level": ""
+        }
+      },
+      "inputs": [],
+      "outputs": []
+    }
+  ],
+  "edges": []
+}

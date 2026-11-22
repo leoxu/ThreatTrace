@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "nodes": [
+    {
+      "extends": "template/node.json",
+      "type": "Triangle",
+      "properties": {
+        "color": "#9b59b6"
+      }
+    }
+  ],
+  "edges": []
+}

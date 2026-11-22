@@ -1,0 +1,31 @@
+{
+  "version": 1,
+  "nodes": [
+    {
+      "extends": "template/box.json",
+      "properties": {
+        "name": "QNX Channel",
+        "class": "security asset",
+        "label": "qnx-channel-1",
+        "z-order": 11,
+        "width": 140,
+        "height": 80,
+        "security-properties": {
+          "type": "qnx channel",
+          "name": "",
+          "flags": "none",
+          "nd": "0"
+        }
+      },
+      "inputs": [
+        "in",
+        "in-2",
+        "in-3",
+        "in-4"
+      ],
+      "outputs": [],
+      "sealed_outputs": true
+    }
+  ],
+  "edges": []
+}
